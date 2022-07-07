@@ -1,0 +1,11 @@
+ARG TERRAFORM_VERSION=v1.2
+FROM quay.io/cloudnativetoolkit/cli-tools-core:${TERRAFORM_VERSION}-v1.0.1-alpine
+
+ARG TARGETPLATFORM
+
+## Azure cli
+RUN sudo apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make python3 py3-pip \
+    && sudo pip3 install --upgrade pip \
+    && sudo pip3 install azure-cli \
+    && sudo rm -rf /var/cache/apk/* \
+    && az --version
