@@ -1,11 +1,25 @@
-ARG TERRAFORM_VERSION=v1.2
-FROM quay.io/cloudnativetoolkit/cli-tools-core:${TERRAFORM_VERSION}-v1.6.1-fedora
+ARG TERRAFORM_VERSION=v1.9
+FROM quay.io/cloudnativetoolkit/cli-tools-core:${TERRAFORM_VERSION}-v2.0.2-fedora
 
 ARG TARGETPLATFORM
 
+USER root
+
 ## Azure cli
-RUN sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
-    sudo dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm && \
-    sudo dnf install -y azure-cli && \
-    sudo dnf clean all && \
-    az --version
+RUN dnf install -y \
+        python3 \
+        pip3 \
+        gcc \
+        musl-devel \
+        python3-devel \
+        libffi-devel \
+        openssl-devel \
+        cargo \
+        make && \
+    dnf clean all && \
+    pip3 install --upgrade --break-system-packages pip && \
+    pip3 install --break-system-packages azure-cli
+
+USER devops
+
+RUN az --version
